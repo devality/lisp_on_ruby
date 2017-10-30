@@ -11,11 +11,12 @@ Gem::Specification.new do |spec|
   spec.description = ""
   spec.authors     = ["Aleksandr Nikishin"]
   spec.email       = ['azmesmparser@gmail.com']
+  spec.executables << 'lisp_on_ruby'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency 'activesupport'
+  spec.add_runtime_dependency 'thor'
 
   spec.add_development_dependency "bundler", "~> 1"
   spec.add_development_dependency "rake", "~> 10.0"
