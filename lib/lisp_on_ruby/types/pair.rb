@@ -1,5 +1,5 @@
-module Abstractions
-  class Pair
+module Types
+  class Pair < Types::Base
 
     def initialize(head = nil, tail = nil)
       @head = head

@@ -3,7 +3,7 @@ class Interpreter
   class << self
     def evaluate(node)
       case node.class.to_s
-      when "Abstractions::Pair"
+      when "Types::Pair"
         return node if node.empty?
 
         head = evaluate(node.car)
@@ -25,27 +25,10 @@ class Interpreter
       tail = node.cdr
 
       until tail.empty?
-        head = real_bin_op(op, head, evaluate(tail.car))
+        head = op.evaluate(head, evaluate(tail.car))
         tail = tail.cdr
       end
       head
-    end
-
-    def real_bin_op(op, x, y)
-      case op.value
-      when "+"
-        x + y
-      when "-"
-        x - y
-      when "*"
-        x * y
-      when "/"
-        x / y
-      when "%"
-        x % y
-      else
-        nil
-      end
     end
   end
 end

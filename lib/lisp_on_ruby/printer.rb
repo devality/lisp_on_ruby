@@ -14,7 +14,7 @@ class Printer
         node.to_s
       when "Types::BinOp"
         node.to_s
-      when "Abstractions::Pair"
+      when "Types::Pair"
         "(#{show_list(node)})"
       when "NilClass"
         ""

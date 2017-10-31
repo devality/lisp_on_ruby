@@ -12,6 +12,6 @@ class Main
   end
 
   def self.cons(head, tail)
-    Abstractions::Pair.cons(head, tail)
+    Types::Pair.cons(head, tail)
   end
 end

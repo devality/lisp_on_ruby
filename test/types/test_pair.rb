@@ -2,11 +2,11 @@ require "minitest/autorun"
 
 class TestPair < Minitest::Test
   def setup
-    @pair = Abstractions::Pair.new("head", "tail")
+    @pair = Types::Pair.new("head", "tail")
   end
 
   def setup_empty
-    @pair = Abstractions::Pair.new
+    @pair = Types::Pair.new
   end
 
   def test_that_pair_has_head
