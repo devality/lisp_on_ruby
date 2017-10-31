@@ -17,6 +17,10 @@ class TestPair < Minitest::Test
     assert_equal "tail", @pair.cdr
   end
 
+  def test_that_pair_is_not_empty
+    assert_equal false, @pair.empty?
+  end
+
   def test_that_pair_is_empty
     setup_empty
     assert_equal true, @pair.empty?

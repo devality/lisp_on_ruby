@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
 require "#{Dir.pwd}/lib/lisp_on_ruby"
-Main.start
+Cli.start
