@@ -1,9 +1,17 @@
-require "thor"
+class Main
+  def self.test
+    add = Types::BinOp.new("+")
+    sub = Types::BinOp.new("-")
+    mul = Types::BinOp.new("*")
+    div = Types::BinOp.new("/")
 
-class Main < Thor
-  desc "read", 'Read and eval file with lisp code'
-  method_option :file, :aliases => "-f", :desc => "File name"
-  def read
-    puts File.read(options[:file])
+    list = self.cons(div, self.cons(self.cons(mul, self.cons(5, self.cons(3, nil))), self.cons(3, nil)))
+    p Printer.show(list)
+
+    p Interpreter.evaluate(list)
+  end
+
+  def self.cons(head, tail)
+    Abstractions::Pair.cons(head, tail)
   end
 end

@@ -6,4 +6,9 @@ class Cli < Thor
   def read
     puts File.read(options[:file])
   end
+
+  desc "test", 'Eval test code'
+  def test
+    Main.test
+  end
 end
