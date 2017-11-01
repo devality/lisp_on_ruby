@@ -1,10 +1,14 @@
 class Printer
   class << self
-    def show_list(node)
-      show(node.car) + (node.cdr.empty? ? "" : " " + show_list(node.cdr))
+    def print(node)
+      p node_to_s(node)
     end
 
-    def show(node)
+    def list_to_s(node)
+      node_to_s(node.car) + (node.cdr.empty? ? "" : " " + list_to_s(node.cdr))
+    end
+
+    def node_to_s(node)
       case node.class.to_s
       when "Fixnum"
         node.to_s
@@ -12,10 +16,12 @@ class Printer
         "\"#{node}\""
       when "Types::Symbol"
         node.to_s
+      when "Types::KeyWord"
+        node.to_s
       when "Types::BinOp"
         node.to_s
       when "Types::Pair"
-        "(#{show_list(node)})"
+        "(#{list_to_s(node)})"
       when "NilClass"
         ""
       else

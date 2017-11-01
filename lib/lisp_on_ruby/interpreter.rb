@@ -14,6 +14,8 @@ class Interpreter
           eval_bin_op(head, tail, env)
         when 'Types::KeyWord'
           head.evaluate(tail.car, evaluate(tail.cdr.car, env), env)
+        else
+          evaluate(tail.car, env)
         end
       when 'Types::Symbol'
         env.get(node.value)
