@@ -18,7 +18,7 @@ class Parser
 
   def parse
     list = []
-    while @current < @length
+    until end_of_string?
       next_char
       if space?
         next
@@ -30,6 +30,8 @@ class Parser
         list.push(Types::BinOp.new(current_char))
       elsif numeric?
         list.push(parse_numeric)
+      elsif quote?
+        list.push(parse_quote_string)
       else
         list.push(parse_string)
       end
@@ -67,6 +69,16 @@ class Parser
     end
   end
 
+  def parse_quote_string
+    token = ""
+    next_char #skip open quote
+    until quote?
+      token << current_char
+      next_char #should skip closed quote
+    end
+    token
+  end
+
   def valid?
     i = 0
     @string.chars.each do |n|
@@ -77,6 +89,10 @@ class Parser
     return false if i != 0
 
     true
+  end
+
+  def end_of_string?
+    @current >= @length
   end
 
   def next_char
@@ -96,7 +112,11 @@ class Parser
   end
 
   def key_word?(token)
-    ['def'].include?(token)
+    Types::KeyWord.key_word?(token)
+  end
+
+  def quote?
+    ['"', "'"].include?(current_char)
   end
 
   def bin_op?

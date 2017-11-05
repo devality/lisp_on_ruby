@@ -24,6 +24,14 @@ class TestParser < Minitest::Test
     assert_equal 42, Interpreter.evaluate(@parser.string_to_ast(code), @global_env)
   end
 
+  def test_strings
+    code = "((def abc 'my lisp')(return abc))"
+    assert_equal 'my lisp', Interpreter.evaluate(@parser.string_to_ast(code), @global_env)
+
+    code = '((def abc "my (lisp)")(return abc))'
+    assert_equal "my (lisp)", Interpreter.evaluate(@parser.string_to_ast(code), @global_env)
+  end
+
   def test_validation
     code = "(+ 1 3 / 6 3) (+ 5 8))"
     assert_equal false, @parser.string_to_ast(code)

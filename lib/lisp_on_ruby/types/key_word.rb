@@ -15,9 +15,15 @@ module Types
       when "def"
         env.define(binding_name.value, binding_value)
         "OK"
+      when "return"
+        env.get(binding_name.value)
       else
         "Nothing"
       end
+    end
+
+    def self.key_word?(word)
+      ['def', 'return'].include?(word)
     end
   end
 end
