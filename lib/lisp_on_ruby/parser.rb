@@ -5,11 +5,7 @@ class Parser
 
   def string_to_ast(string)
     setup(string)
-    if valid?
-      parse
-    else
-      false
-    end
+    valid? ? parse : false
   end
 
   private
@@ -23,17 +19,17 @@ class Parser
   def parse
     list = []
     while @current < @length
-      inc
+      next_char
       if space?
         next
-      elsif Parser.open_bracket?(current_char)
+      elsif open_bracket?
         list.push(parse)
-      elsif Parser.close_bracket?(current_char)
+      elsif close_bracket?
         break
-      elsif Parser.bin_op?(current_char)
+      elsif bin_op?
         list.push(Types::BinOp.new(current_char))
-      elsif Parser.numeric?(current_char)
-        list.push(current_char.to_i)
+      elsif numeric?
+        list.push(parse_numeric)
       else
         list.push(parse_string)
       end
@@ -47,16 +43,27 @@ class Parser
     real_list
   end
 
-  def parse_string
-    string = ""
-    until space?
-      string << current_char
-      inc
+  def parse_numeric
+    token = ""
+    while numeric?
+      token << current_char
+      next_char
     end
-    if Parser.key_word?(string)
-      Types::KeyWord.new(string)
+    prev_char
+    token.to_i
+  end
+
+  def parse_string
+    token = ""
+    until space? || close_bracket?
+      token << current_char
+      next_char
+    end
+    prev_char
+    if key_word?(token)
+      Types::KeyWord.new(token)
     else
-      Types::Symbol.new(string)
+      Types::Symbol.new(token)
     end
   end
 
@@ -67,41 +74,44 @@ class Parser
       i -= 1 if n == ")"
       return false if i < 0
     end
+    return false if i != 0
 
     true
   end
 
-  def space?
-    current_char == " "
+  def next_char
+    @current += 1
   end
 
-  def inc
-    @current += 1
+  def prev_char
+    @current -=1
   end
 
   def current_char
     @string[@current]
   end
 
-  class << self
-    def numeric?(char)
-      /^\d+$/ === char
-    end
+  def numeric?
+    /^\d+$/ === current_char
+  end
 
-    def key_word?(char)
-      ['def'].include?(char)
-    end
+  def key_word?(token)
+    ['def'].include?(token)
+  end
 
-    def bin_op?(char)
-      ['*', '/', '+', '-', '%'].include?(char)
-    end
+  def bin_op?
+    ['*', '/', '+', '-', '%'].include?(current_char)
+  end
 
-    def open_bracket?(char)
-      ['(', '[', '{'].include?(char)
-    end
+  def open_bracket?
+    current_char == "("
+  end
 
-    def close_bracket?(char)
-      [')', ']', '}'].include?(char)
-    end
+  def space?
+    current_char == " "
+  end
+
+  def close_bracket?
+    current_char == ")"
   end
 end
