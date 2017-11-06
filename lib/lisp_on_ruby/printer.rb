@@ -4,6 +4,7 @@ class Printer
       p node_to_s(node)
     end
 
+    private
     def list_to_s(node)
       node_to_s(node.car) + (node.cdr.empty? ? "" : " " + list_to_s(node.cdr))
     end
@@ -20,8 +21,16 @@ class Printer
         node.to_s
       when "Types::BinOp"
         node.to_s
+      when "Types::Lambda"
+        "(lambda #{self.node_to_s(node.args)} #{self.node_to_s(node.body)})"
+      when "Types::BinPred"
+        node.to_s
       when "Types::Pair"
-        "(#{list_to_s(node)})"
+        unless node.empty?
+          "(#{list_to_s(node)})"
+        else
+          "()"
+        end
       when "NilClass"
         ""
       else

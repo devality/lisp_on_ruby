@@ -10,20 +10,42 @@ module Types
       value.to_s
     end
 
-    def evaluate(binding_name, binding_value, env)
+    def evaluate(a, b, env)
       case value
       when "def"
-        env.define(binding_name.value, binding_value)
+        env.define(a.value, b)
         "OK"
+      when "quote"
+        a
+      when "cons"
+        if b.kind_of?(Types::Pair)
+          Types::Pair.cons(a, b)
+        else
+          "cons require list"
+        end
+      when "car"
+        if a.kind_of?(Types::Pair)
+          a.car
+        else
+          "car require list"
+        end
+      when "cdr"
+        if a.kind_of?(Types::Pair)
+          a.cdr
+        else
+          "cdr require list"
+        end
+      when "if"
+        b
       when "return"
-        env.get(binding_name.value)
+        env.get(a.value)
       else
         "Nothing"
       end
     end
 
     def self.key_word?(word)
-      ['def', 'return'].include?(word)
+      ['def', 'if', 'cons', 'car', 'cdr', 'quote', 'return'].include?(word)
     end
   end
 end

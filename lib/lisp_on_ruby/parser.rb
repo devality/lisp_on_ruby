@@ -64,6 +64,8 @@ class Parser
     prev_char
     if key_word?(token)
       Types::KeyWord.new(token)
+    elsif bin_pred?(token)
+      Types::BinPred.new(token)
     else
       Types::Symbol.new(token)
     end
@@ -120,7 +122,11 @@ class Parser
   end
 
   def bin_op?
-    ['*', '/', '+', '-', '%'].include?(current_char)
+    Types::BinOp.bin_op?(current_char)
+  end
+
+  def bin_pred?(token)
+    Types::BinPred.bin_pred?(token)
   end
 
   def space?

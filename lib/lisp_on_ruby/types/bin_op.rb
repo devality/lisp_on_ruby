@@ -26,5 +26,9 @@ module Types
         nil
       end
     end
+
+    def self.bin_op?(char)
+      ['*', '/', '+', '-', '%'].include?(char)
+    end
   end
 end
