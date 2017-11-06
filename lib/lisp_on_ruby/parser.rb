@@ -20,7 +20,7 @@ class Parser
     list = []
     until end_of_string?
       next_char
-      if space?
+      if space? || tab? || new_line?
         next
       elsif open_bracket?
         list.push(parse)
@@ -123,12 +123,20 @@ class Parser
     ['*', '/', '+', '-', '%'].include?(current_char)
   end
 
-  def open_bracket?
-    current_char == "("
-  end
-
   def space?
     current_char == " "
+  end
+
+  def tab?
+    current_char == "\t"
+  end
+
+  def new_line?
+    ["\n", "\r"].include?(current_char)
+  end
+
+  def open_bracket?
+    current_char == "("
   end
 
   def close_bracket?

@@ -19,7 +19,8 @@ class TestParser < Minitest::Test
   end
 
   def test_defining
-    code = "((def abc (* 5 5))(+ 2 8 (/ 6 3) (+ 5 abc)))"
+    code = "((def abc (* 5 5))
+    (+ 2 8 (/ 6 3) (+ 5 abc)))"
 
     assert_equal 42, Interpreter.evaluate(@parser.string_to_ast(code), @global_env)
   end
