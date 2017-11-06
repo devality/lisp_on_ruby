@@ -66,6 +66,19 @@ class TestParser < Minitest::Test
     assert_equal "False", Interpreter.evaluate(ast, @global_env)
   end
 
+  def test_lambda
+    code = "((lambda (x) (+ x 1)) 10)"
+    ast = @parser.string_to_ast(code)
+    assert_equal 11, Interpreter.evaluate(ast, @global_env)
+  end
+
+  def test_fibonachi
+    code = "((def fibo (lambda (n) (if (<= n 1) n (+ (fibo (- n 1)) (fibo (- n 2))))))
+            (fibo 15))"
+    ast = @parser.string_to_ast(code)
+    assert_equal 610, Interpreter.evaluate(ast, @global_env)
+  end
+
   def test_validation
     code = "(+ 1 3 / 6 3) (+ 5 8))"
     assert_equal false, @parser.string_to_ast(code)

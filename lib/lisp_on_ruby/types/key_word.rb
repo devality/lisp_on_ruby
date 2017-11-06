@@ -45,7 +45,7 @@ module Types
     end
 
     def self.key_word?(word)
-      ['def', 'if', 'cons', 'car', 'cdr', 'quote', 'return'].include?(word)
+      ['def', 'lambda', 'if', 'cons', 'car', 'cdr', 'quote', 'return'].include?(word)
     end
   end
 end

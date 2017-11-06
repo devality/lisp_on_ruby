@@ -21,10 +21,16 @@ class Interpreter
             eval_if(head, tail, env)
           when "cons", "car", "cdr"
             head.evaluate(evaluate(tail.car, env), evaluate(tail.cdr.car, env), env)
+          when "lambda"
+            Types::Lambda.new(tail.car, tail.cdr.car, env)
           else
             head.evaluate(tail.car, evaluate(tail.cdr.car, env), env)
           end
 
+        when 'Types::Lambda'
+          sub_env = Env.new({}, env)
+          bind_lambda_args(sub_env, head.args, tail, env)
+          evaluate(head.body, sub_env)
         else
           evaluate(tail.car, env)
         end
@@ -33,6 +39,16 @@ class Interpreter
       else
         node
       end
+    end
+
+    def bind_lambda_args(sub_env, args, tail, env)
+      return if args.empty? || tail.empty?
+
+      arg = args.car
+      value = evaluate(tail.car, env)
+      sub_env.define(arg.value, value)
+
+      bind_lambda_args(sub_env, args.cdr, tail.cdr, env)
     end
 
     def eval_if(head, tail, env)
