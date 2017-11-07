@@ -51,6 +51,18 @@ class TestParser < Minitest::Test
     assert_equal "False", evaluate("(if (> 1 2) 1 'False')")
   end
 
+  def test_cond
+    assert_equal 1, evaluate("(cond ((< 1 2) 1)
+                                     ((== 5 5.1) 'omg!')
+                                     (else '3d case'))")
+    assert_equal "omg!", evaluate("(cond ((> 1 2) 1)
+                                     ((== 5 5.0) 'omg!')
+                                     (else '3d case'))")
+    assert_equal "3d case", evaluate("(cond ((> 1 2) 1)
+                                     ((== 5 5.1) 'omg!')
+                                     (else '3d case'))")
+  end
+
   def test_lambda
     assert_equal 11, evaluate("((lambda (x) (+ x 1)) 10)")
   end

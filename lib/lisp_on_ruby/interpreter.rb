@@ -19,6 +19,8 @@ class Interpreter
           case head.value
           when "if"
             eval_if(head, tail, env)
+          when "cond"
+            eval_cond(head, tail, env)
           when "cons", "car", "cdr"
             head.evaluate(evaluate(tail.car, env), evaluate(tail.cdr.car, env), env)
           when "lambda"
@@ -51,12 +53,21 @@ class Interpreter
       bind_lambda_args(sub_env, args.cdr, tail.cdr, env)
     end
 
+    def eval_cond(head, tail, env)
+      predicat = evaluate(tail.car.car, env)
+      if predicat # will be equal KeyWord:else in last iteration
+        head.evaluate(nil, evaluate(tail.car.cdr.car, env), env)
+      else
+        eval_cond(head, tail.cdr, env)
+      end
+    end
+
     def eval_if(head, tail, env)
       predicat = evaluate(tail.car, env)
       if predicat
-        head.evaluate(predicat, evaluate(tail.cdr.car, env), env)
+        head.evaluate(nil, evaluate(tail.cdr.car, env), env)
       else
-        head.evaluate(predicat, evaluate(tail.cdr.cdr.car, env), env)
+        head.evaluate(nil, evaluate(tail.cdr.cdr.car, env), env)
       end
     end
 

@@ -35,7 +35,7 @@ module Types
         else
           "cdr require list"
         end
-      when "if"
+      when "if", "cond"
         b
       when "return"
         env.get(a.value)
@@ -45,7 +45,7 @@ module Types
     end
 
     def self.key_word?(word)
-      ['def', 'lambda', 'if', 'cons', 'car', 'cdr', 'quote', 'return'].include?(word)
+      ['def', 'lambda', 'if', 'cond', 'else', 'cons', 'car', 'cdr', 'quote', 'return'].include?(word)
     end
   end
 end
