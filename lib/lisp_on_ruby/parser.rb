@@ -19,16 +19,16 @@ class Parser
   def parse
     list = []
     until end_of_string?
-      next_char
+      go_to_next_char
       if space? || tab? || new_line?
         next
       elsif open_bracket?
         list.push(parse)
       elsif close_bracket?
         break
-      elsif bin_op?
+      elsif bin_op? && prev_open_bracket?
         list.push(Types::BinOp.new(current_char))
-      elsif numeric?
+      elsif numeric? || minus?
         list.push(parse_numeric)
       elsif quote?
         list.push(parse_quote_string)
@@ -47,21 +47,28 @@ class Parser
 
   def parse_numeric
     token = ""
+    sign = 1
+    if minus?
+      sign = -1
+      go_to_next_char
+    end
     while numeric?
       token << current_char
-      next_char
+      go_to_next_char
     end
-    prev_char
-    token.to_i
+    go_to_prev_char #to avoid double 'go_to_next_char'
+
+    token.to_i * sign
   end
 
   def parse_string
     token = ""
     until space? || close_bracket?
       token << current_char
-      next_char
+      go_to_next_char
     end
-    prev_char
+    go_to_prev_char #to avoid double 'go_to_next_char'
+
     if key_word?(token)
       Types::KeyWord.new(token)
     elsif bin_pred?(token)
@@ -73,11 +80,12 @@ class Parser
 
   def parse_quote_string
     token = ""
-    next_char #skip open quote
+    go_to_next_char #skip open quote
     until quote?
       token << current_char
-      next_char #should skip closed quote
+      go_to_next_char #should skip closed quote
     end
+
     token
   end
 
@@ -97,11 +105,11 @@ class Parser
     @current >= @length
   end
 
-  def next_char
+  def go_to_next_char
     @current += 1
   end
 
-  def prev_char
+  def go_to_prev_char
     @current -=1
   end
 
@@ -109,8 +117,16 @@ class Parser
     @string[@current]
   end
 
+  def previous_char
+    @string[@current - 1]
+  end
+
   def numeric?
     /^\d+$/ === current_char
+  end
+
+  def minus?
+    current_char == '-'
   end
 
   def key_word?(token)
@@ -143,6 +159,10 @@ class Parser
 
   def open_bracket?
     current_char == "("
+  end
+
+  def prev_open_bracket?
+    previous_char == "("
   end
 
   def close_bracket?

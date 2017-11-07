@@ -1,17 +1,18 @@
 require "minitest/autorun"
 
 class TestParser < Minitest::Test
-  def setup
-    @global_env = Env.new
-    @parser = Parser.new
-  end
 
   def evaluate(code)
-    Interpreter.evaluate(@parser.string_to_ast(code), @global_env)
+    Interpreter.evaluate(Parser.new.string_to_ast(code), Env.new)
+  end
+
+  def test_validation
+    assert_equal false, evaluate("(+ 1 3 / 6 3) (+ 5 8))")
+    assert_equal false, evaluate("(+ 1 3)(")
   end
 
   def test_simple_calc
-    assert_equal 215, evaluate("(+ 1 202 5 7)")
+    assert_equal 213, evaluate("(+ -1 202 5 7)")
   end
 
   def test_nested_calc
@@ -51,10 +52,5 @@ class TestParser < Minitest::Test
   def test_fibonachi
     assert_equal 610, evaluate("((def fibo (lambda (n) (if (<= n 1) n (+ (fibo (- n 1)) (fibo (- n 2))))))
             (fibo 15))")
-  end
-
-  def test_validation
-    assert_equal false, evaluate("(+ 1 3 / 6 3) (+ 5 8))")
-    assert_equal false, evaluate("(+ 1 3)(")
   end
 end
