@@ -52,13 +52,15 @@ class Parser
       sign = -1
       go_to_next_char
     end
-    while numeric?
+    float = false
+    while numeric? || dot?
+      float = true if dot?
       token << current_char
       go_to_next_char
     end
     go_to_prev_char #to avoid double 'go_to_next_char'
 
-    token.to_i * sign
+    (float ? token.to_f : token.to_i) * sign
   end
 
   def parse_string
@@ -151,6 +153,10 @@ class Parser
 
   def tab?
     current_char == "\t"
+  end
+
+  def dot?
+    current_char == "."
   end
 
   def new_line?

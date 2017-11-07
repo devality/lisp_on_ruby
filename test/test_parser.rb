@@ -19,6 +19,12 @@ class TestParser < Minitest::Test
     assert_equal 28, evaluate("(+ 10 3 (/ 6 3) (+ 5 8))")
   end
 
+  def test_float_numbers
+    assert_equal 3.01, evaluate("(/ 9.03 3)")
+    assert_equal 1.5, evaluate("(/ 4.5 3.0)")
+    assert_equal 2.0, evaluate("(+ 1 1.0)")
+  end
+
   def test_defining
     assert_equal 42, evaluate("((def abc (* 5 5))
       (+ 2 8 (/ 6 3) (+ 5 abc)))")

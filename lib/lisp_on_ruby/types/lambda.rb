@@ -11,8 +11,5 @@ module Types
     def to_s
       "#{args} #{body}"
     end
-
-    def evaluate(args)
-    end
   end
 end
