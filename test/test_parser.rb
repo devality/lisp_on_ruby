@@ -1,3 +1,4 @@
+require 'stringio'
 require "minitest/autorun"
 
 class TestParser < Minitest::Test
@@ -64,11 +65,36 @@ class TestParser < Minitest::Test
   end
 
   def test_lambda
-    assert_equal 11, evaluate("((lambda (x) (+ x 1)) 10)")
+    assert_equal 11, evaluate("((def a 1)((lambda (x) (+ x a)) 10))")
   end
 
   def test_fibonachi
     assert_equal 610, evaluate("((def fibo (lambda (n) (if (<= n 1) n (+ (fibo (- n 1)) (fibo (- n 2))))))
             (fibo 15))")
+  end
+
+  def test_define
+    assert_equal 27, evaluate("((define (cube x) (* x x x))(cube 3))")
+  end
+
+  def test_fibonachi_define
+    assert_equal 610, evaluate("((define (fibo n) (if (<= n 1) n (+ (fibo (- n 1)) (fibo (- n 2)))))
+            (fibo 15))")
+  end
+
+  def test_print
+    printed = capture_stdout do
+      evaluate("((define (print_test x) (print 'You ' x ' Rick'))(print_test 'are'))")
+    end
+    assert_equal "You are Rick", printed
+  end
+
+  def capture_stdout(&blk)
+    old = $stdout
+    $stdout = fake = StringIO.new
+    blk.call
+    fake.string
+  ensure
+    $stdout = old
   end
 end

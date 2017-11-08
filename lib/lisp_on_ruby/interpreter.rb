@@ -15,7 +15,6 @@ class Interpreter
         when 'Types::BinPred'
           eval_bin_pred(head, tail, env)
         when 'Types::KeyWord'
-
           case head.value
           when "if"
             eval_if(head, tail, env)
@@ -25,10 +24,15 @@ class Interpreter
             head.evaluate(evaluate(tail.car, env), evaluate(tail.cdr.car, env), env)
           when "lambda"
             Types::Lambda.new(tail.car, tail.cdr.car, env)
+          when "define"
+            la = Types::Lambda.new(tail.car.cdr, tail.cdr.car, env)
+            env.define(tail.car.car.value, la)
+            true
+          when "print"
+            print concat_args(tail, env)
           else
             head.evaluate(tail.car, evaluate(tail.cdr.car, env), env)
           end
-
         when 'Types::Lambda'
           sub_env = Env.new({}, env)
           bind_lambda_args(sub_env, head.args, tail, env)
@@ -41,6 +45,11 @@ class Interpreter
       else
         node
       end
+    end
+
+    def concat_args(args, env)
+      return "" if args.empty?
+      evaluate(args.car, env) << concat_args(args.cdr, env)
     end
 
     def bind_lambda_args(sub_env, args, tail, env)
