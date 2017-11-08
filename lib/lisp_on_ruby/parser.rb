@@ -65,7 +65,7 @@ class Parser
 
   def parse_string
     token = ""
-    until space? || close_bracket?
+    until space? || close_bracket? || new_line?
       token << current_char
       go_to_next_char
     end

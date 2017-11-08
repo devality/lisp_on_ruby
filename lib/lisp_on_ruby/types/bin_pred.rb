@@ -20,7 +20,7 @@ module Types
         x >= y
       when "<="
         x <= y
-      when "=="
+      when "="
         x == y
       when "!="
         x != y
@@ -30,7 +30,7 @@ module Types
     end
 
     def self.bin_pred?(string)
-      ['>', '<', '>=', '<=', '==', '!='].include?(string)
+      ['>', '<', '>=', '<=', '=', '!='].include?(string)
     end
   end
 end

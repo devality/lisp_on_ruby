@@ -54,13 +54,13 @@ class TestParser < Minitest::Test
 
   def test_cond
     assert_equal 1, evaluate("(cond ((< 1 2) 1)
-                                     ((== 5 5.1) 'omg!')
+                                     ((= 5 5.1) 'omg!')
                                      (else '3d case'))")
     assert_equal "omg!", evaluate("(cond ((> 1 2) 1)
-                                     ((== 5 5.0) 'omg!')
+                                     ((= 5 5.0) 'omg!')
                                      (else '3d case'))")
     assert_equal "3d case", evaluate("(cond ((> 1 2) 1)
-                                     ((== 5 5.1) 'omg!')
+                                     ((= 5 5.1) 'omg!')
                                      (else '3d case'))")
   end
 
@@ -88,6 +88,18 @@ class TestParser < Minitest::Test
     end
     assert_equal "You are Rick", printed
   end
+
+ def test_multiline
+   assert_equal 2, evaluate("(
+ (define (gcd a b)
+   (if (= b 0)
+     a
+     (gcd b (% a b)))
+   )
+ (gcd 206 40)
+ )
+")
+ end
 
   def capture_stdout(&blk)
     old = $stdout
