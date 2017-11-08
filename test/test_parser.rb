@@ -3,10 +3,6 @@ require "minitest/autorun"
 
 class TestParser < Minitest::Test
 
-  def evaluate(code)
-    Interpreter.evaluate(Parser.new.string_to_ast(code), Env.new)
-  end
-
   def test_validation
     assert_equal false, evaluate("(+ 1 3 / 6 3) (+ 5 8))")
     assert_equal false, evaluate("(+ 1 3)(")
@@ -89,8 +85,8 @@ class TestParser < Minitest::Test
     assert_equal "You are Rick", printed
   end
 
- def test_multiline
-   assert_equal 2, evaluate("(
+  def test_multiline
+    assert_equal 2, evaluate("(
  (define (gcd a b)
    (if (= b 0)
      a
@@ -99,7 +95,29 @@ class TestParser < Minitest::Test
  (gcd 206 40)
  )
 ")
- end
+  end
+
+
+  def test_complicated_example
+    assert_equal 55, evaluate("
+(
+ (define (fib n)
+   (fib-iter 1 0 n))
+
+ (define (fib-iter a b count)
+   (if (= count 0)
+     b
+     (fib-iter (+ a b) a (- count 1))))
+
+ (fib 10)
+ )")
+  end
+
+  private
+
+  def evaluate(code)
+    Interpreter.evaluate(Parser.new.string_to_ast(code), Env.new)
+  end
 
   def capture_stdout(&blk)
     old = $stdout

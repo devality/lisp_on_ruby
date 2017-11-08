@@ -4,8 +4,6 @@ class Interpreter
     def evaluate(node, env)
       case node.class.to_s
       when "Types::Pair"
-        return node if node.empty?
-
         head = evaluate(node.car, env)
         tail = node.cdr
 
@@ -15,6 +13,7 @@ class Interpreter
         when 'Types::BinPred'
           eval_bin_pred(head, tail, env)
         when 'Types::KeyWord'
+
           case head.value
           when "if"
             eval_if(head, tail, env)
@@ -27,18 +26,23 @@ class Interpreter
           when "define"
             la = Types::Lambda.new(tail.car.cdr, tail.cdr.car, env)
             env.define(tail.car.car.value, la)
-            true
+            "function defined"
           when "print"
             print concat_args(tail, env)
           else
             head.evaluate(tail.car, evaluate(tail.cdr.car, env), env)
           end
+
         when 'Types::Lambda'
           sub_env = Env.new({}, env)
           bind_lambda_args(sub_env, head.args, tail, env)
           evaluate(head.body, sub_env)
         else
-          evaluate(tail.car, env)
+          if tail.empty?
+            head
+          else
+            evaluate(tail, env)
+          end
         end
       when 'Types::Symbol'
         env.get(node.value)

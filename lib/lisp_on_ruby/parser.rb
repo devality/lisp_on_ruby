@@ -5,7 +5,12 @@ class Parser
 
   def string_to_ast(string)
     setup(string)
-    valid? ? parse : false
+    if valid?
+      parse
+    else
+      p "Incorrect S-expression"
+      false
+    end
   end
 
   private
@@ -20,7 +25,7 @@ class Parser
     list = []
     until end_of_string?
       go_to_next_char
-      if space? || tab? || new_line?
+      if space? || tab? || new_line? || end_of_string?
         next
       elsif open_bracket?
         list.push(parse)
