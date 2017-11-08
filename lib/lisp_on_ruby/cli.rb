@@ -1,10 +1,11 @@
 require "thor"
 
 class Cli < Thor
-  desc "read", 'Read and eval file with lisp code'
+  desc "eval_file", 'Read and eval file with lisp code'
   method_option :file, :aliases => "-f", :desc => "File name"
-  def read
-    puts File.read(options[:file])
+  def eval_file
+    file = File.read(options[:file])
+    Interpreter.evaluate(Parser.new.string_to_ast(file), Env.new)
   end
 
   desc "test", 'Eval test code'
