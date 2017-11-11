@@ -19,6 +19,10 @@ class Interpreter
             eval_if(head, tail, env)
           when "cond"
             eval_cond(head, tail, env)
+          when "and"
+            eval_and(head, tail, env)
+          when "or"
+            eval_or(head, tail, env)
           when "cons", "car", "cdr"
             head.evaluate(evaluate(tail.car, env), evaluate(tail.cdr.car, env), env)
           when "lambda"
@@ -81,6 +85,32 @@ class Interpreter
         head.evaluate(nil, evaluate(tail.cdr.car, env), env)
       else
         head.evaluate(nil, evaluate(tail.cdr.cdr.car, env), env)
+      end
+    end
+
+    def eval_and(head, tail, env)
+      predicat = evaluate(tail.car, env)
+      if predicat
+        if tail.cdr.empty?
+          true
+        else
+          eval_and(head, tail.cdr, env)
+        end
+      else
+        false
+      end
+    end
+
+    def eval_or(head, tail, env)
+      predicat = evaluate(tail.car, env)
+      if predicat
+        true
+      else
+        if tail.cdr.empty?
+          false
+        else
+          eval_or(head, tail.cdr, env)
+        end
       end
     end
 

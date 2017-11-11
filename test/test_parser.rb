@@ -4,8 +4,10 @@ require "minitest/autorun"
 class TestParser < Minitest::Test
 
   def test_validation
-    assert_equal false, evaluate("(+ 1 3 / 6 3) (+ 5 8))")
-    assert_equal false, evaluate("(+ 1 3)(")
+    capture_stdout do
+      assert_equal false, evaluate("(+ 1 3 / 6 3) (+ 5 8))")
+      assert_equal false, evaluate("(+ 1 3)(")
+    end
   end
 
   def test_simple_calc
@@ -94,7 +96,7 @@ class TestParser < Minitest::Test
    )
  (gcd 206 40)
  )
-")
+                             ")
   end
 
 
@@ -111,6 +113,17 @@ class TestParser < Minitest::Test
 
  (fib 10)
  )")
+  end
+
+  def test_and_or
+    assert_equal 6, evaluate("
+(
+  (define (pascal row element)
+    (cond ((or (= element 1) (= element row)) 1)
+    ((and (> element 1) (< element row)) (+ (pascal (- row 1) (- element 1))
+                                            (pascal (- row 1) element)))))
+  (pascal 5 3)
+)")
   end
 
   private
